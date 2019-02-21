@@ -1,0 +1,27 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+
+  <arg name="node_name" default="vesc_driver_node" />
+
+  <!-- Optionally launch in GDB, for debugging -->
+  <arg name="debug" default="false" />
+  <arg if="$(arg debug)" name="launch_prefix" value="xterm -e gdb --args" />
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+
+  <!-- VESC driver parameters -->
+  <arg name="port" default="/dev/ttyUSB0" />
+
+  <!-- Parameter for enabling rotor position publishing
+       Possible values are "inductance", "observer", "encoder", "pid_pos", "pid_pos_error", "encoder_observer_error" -->
+  <arg name="rotor_position_source" default="encoder" />
+
+  <!-- VESC driver node -->
+  <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name)"
+        output="screen" launch-prefix="$(arg launch_prefix)" >
+        <param name="port" value="$(arg port)" />
+        <param name="tacho_pulses_per_revolution" value="120" />
+        <param name="motor_poles" value="42" />
+        <param name="rotor_position_source" value="$(arg rotor_position_source)" />
+  </node>
+
+</launch>
